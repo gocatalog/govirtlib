@@ -3,8 +3,17 @@ govirtlib
 
 <img align="right" width="180px" src="https://raw.githubusercontent.com/gocatalog/govirtlib/master/assets/go-virt-wrap.png">
 
-[![Build Status](https://github.com/gocatalog/govirtlib/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/features/actions)
-
+[![Build Status](https://github.com/gocatalog/govirtlib/actions/workflows/fossa-actions.yml/badge.svg)](https://github.com/gocatalog/govirtlib/actions/workflows/fossa-actions.yml)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgocatalog%2Fgovirtlib.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgocatalog%2Fgovirtlib?ref=badge_shield&issueType=license)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgocatalog%2Fgovirtlib.svg?type=shield&issueType=security)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgocatalog%2Fgovirtlib?ref=badge_shield&issueType=security)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgocatalog%2Fgovirtlib.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgocatalog%2Fgovirtlib?ref=badge_small)
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 ## Contents
 - [Getting started](#getting-started)
 
@@ -30,7 +39,7 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 
 
 ## License
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgocatalog%2Fgovirtlib.svg?type=shield&issueType=security)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgocatalog%2Fgovirtlib?ref=badge_shield&issueType=security)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgocatalog%2Fgovirtlib.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgocatalog%2Fgovirtlib?ref=badge_large&issueType=license)
 
 <!--
 TODO
