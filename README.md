@@ -16,6 +16,7 @@ govirtlib
 <br/>
 ## Contents
 - [Getting started](#getting-started)
+- [Devlopment SetUp](#dev-setup)
 
 
 ## Getting started
@@ -23,6 +24,14 @@ govirtlib
 1. TODO: how to use this project
 
 ## About The Project
+
+## Dev Setup
+use [nektos/act](https://github.com/nektos/act) to run githubactions locally
+and then run
+```sh
+export GITHUB_TOKEN=<token>
+act -s GITHUB_TOKEN=$GITHUB_TOKEN
+```
 
 ## Contributors
 

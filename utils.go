@@ -1,6 +1,10 @@
 package govirtlib
 
-import "fmt"
+import (
+	"fmt"
+
+	"libvirt.org/go/libvirt"
+)
 
 // convertLibvirtVersion converts Uint32 version into
 // proper major minor macro
@@ -18,4 +22,30 @@ func convertLibvirtVersion(inputVer uint32) string {
 	micro := ver
 	versionString := fmt.Sprintf("%d.%d.%d", major, minor, micro)
 	return versionString
+}
+
+// stateToStatus func converts Domain state tu human readable format.
+//
+// see also https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectListAllDomainsFlags
+func stateToStatus(state libvirt.DomainState) string {
+	var status string
+	switch state {
+	case libvirt.DOMAIN_NOSTATE:
+		status = nostate
+	case libvirt.DOMAIN_RUNNING:
+		status = running
+	case libvirt.DOMAIN_BLOCKED:
+		status = blocked
+	case libvirt.DOMAIN_PAUSED:
+		status = paused
+	case libvirt.DOMAIN_SHUTDOWN:
+		status = shutdown
+	case libvirt.DOMAIN_CRASHED:
+		status = crashed
+	case libvirt.DOMAIN_PMSUSPENDED:
+		status = pmSuspended
+	case libvirt.DOMAIN_SHUTOFF:
+		status = shutOff
+	}
+	return status
 }

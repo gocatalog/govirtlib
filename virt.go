@@ -1,20 +1,7 @@
 package govirtlib
 
 import (
-	"time"
-
 	"libvirt.org/go/libvirt"
-)
-
-const (
-	// VERSION govirtlib version number
-	VERSION string = "0.0.1-dev"
-	// QEMUSystem connects to a QEMU system mode daemon
-	QEMUSystem string = "qemu:///system"
-
-	// disconnectedTimeout is how long to wait for disconnect cleanup to
-	// complete
-	disconnectTimeout = 5 * time.Second
 )
 
 // Version ...
@@ -28,6 +15,28 @@ type Version struct {
 type govirtlib struct {
 	uri        string
 	Connection *libvirt.Connect
+}
+
+// VMInfo Struct containing all vm Details
+type VMInfo struct {
+	// ID
+	//
+	// See also https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetID
+	ID uint `json:"id"`
+	// UUID
+	//
+	// See also https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetUUIDString
+	UUID string `json:"uuid"`
+	// Name
+	//
+	// See also https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetID
+	Name string `json:"name"`
+	// State
+	//
+	// See also https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainGetState
+	State int `json:"state"`
+	// Status converted from state into human readable format
+	Status string `json:"status"`
 }
 
 // NewConnection establishes communication with the specified libvirt
@@ -56,4 +65,53 @@ func (g *govirtlib) GetVersion() (Version, error) {
 	libvirtVersion := convertLibvirtVersion(intLibvirtVersion)
 	hypervisorVersion := convertLibvirtVersion(libvirt.VERSION_NUMBER)
 	return Version{VERSION, hypervisorVersion, libvirtVersion}, nil
+}
+
+// ListAllVM ...
+//
+// See also https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectListAllDomains
+func (g *govirtlib) ListAllVM() ([]VMInfo, error) {
+
+	flags := libvirt.CONNECT_LIST_DOMAINS_ACTIVE
+	// libvirt.ConnectListDomainsActive | libvirt.ConnectListDomainsInactive
+	domains, err := g.Connection.ListAllDomains(flags)
+	if err != nil {
+		return nil, err
+	}
+
+	vmInfoList := []VMInfo{}
+
+	for _, vm := range domains {
+
+		vmID, err := vm.GetID()
+		if err != nil {
+			return nil, err
+		}
+
+		vmUUID, err := vm.GetUUIDString()
+		if err != nil {
+			return nil, err
+		}
+
+		vmName, err := vm.GetName()
+		if err != nil {
+			return nil, err
+		}
+
+		vmState, reason, err := vm.GetState()
+		if err != nil {
+			return nil, err
+		}
+
+		vmStatus := stateToStatus(vmState)
+		vmInfo := VMInfo{
+			ID:     vmID,
+			UUID:   vmUUID,
+			Name:   vmName,
+			State:  reason,
+			Status: vmStatus,
+		}
+		vmInfoList = append(vmInfoList, vmInfo)
+	}
+	return vmInfoList, nil
 }
