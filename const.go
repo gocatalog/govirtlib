@@ -2,6 +2,8 @@ package govirtlib
 
 import "time"
 
+type vmOption string
+
 const (
 	// VERSION govirtlib version number
 	VERSION string = "0.0.1-dev"
@@ -20,4 +22,7 @@ const (
 	crashed     = "CRASHED "
 	pmSuspended = "PMSUSPENDED"
 	shutOff     = "SHUTOFF"
+
+	VMOptUUID vmOption = "UUID"
+	VMOptName vmOption = "Name"
 )

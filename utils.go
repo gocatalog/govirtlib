@@ -6,6 +6,12 @@ import (
 	"libvirt.org/go/libvirt"
 )
 
+type goVirtError struct {
+	name    string
+	code    int
+	message string
+}
+
 // convertLibvirtVersion converts Uint32 version into
 // proper major minor macro
 // The version is provided as an int following this formula:
@@ -48,4 +54,10 @@ func stateToStatus(state libvirt.DomainState) string {
 		status = shutOff
 	}
 	return status
+}
+
+func gError(err goVirtError) string {
+	return fmt.Sprintf(
+		"govirtlibError(Name=%s, Code=%d, Message='%s')",
+		err.name, err.code, err.message)
 }
