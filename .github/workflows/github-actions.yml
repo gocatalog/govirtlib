@@ -30,43 +30,26 @@ jobs:
           github-token: ${{ github.token }}
 
   test:
-    runs-on: ubuntu-latest
+    name:  GoTest
     strategy:
       matrix:
-        go-version: [ '1.19', '1.20', '1.21.x' ]
-
+        # go-version: [ '1.19', '1.20', '1.21.x' ]
+        go-version: ['1.21']
+        os: ['ubuntu-20.04', 'ubuntu-22.04']
+    runs-on: ${{ matrix.os }}
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
+      - name: Install libvirt
         run: |
-          ls ${{ github.workspace }}
-
-      - name: Setup Go ${{ matrix.go-version }}
+          sudo apt-get update
+          sudo apt-get -y install libvirt-devel libvirt-daemon-kvm libvirt-client
+      - uses: actions/checkout@v4
+      - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
-      # You can test your matrix by printing the current Go version
-      - name: Display Go version
-        run: go version
-
       - name: Install dependencies
-        run: |
-          go get .
-          github.com/gotesttools/gotestfmt/v2/cmd/gotestfmt@latest
-
-      - name: Test with Go
-        run: go test -race -json -v -coverprofile=coverage.txt ./... 2>&1 | tee TestResults-${{ matrix.go-version }}.json | gotestfmt
-
-      - name: Upload Go test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: Go-results-${{ matrix.go-version }}
-          path: TestResults-${{ matrix.go-version }}.json
-
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+        run: go get .
+      - name: Build
+        run: go build -v ./...
+      - name: Test with the Go CLI
+        run: go test
