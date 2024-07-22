@@ -1,0 +1,72 @@
+name: GitHub Actions RUN
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on:
+  - pull_request
+  - push
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: read-all
+jobs:
+  scan-license:
+    name:  FOSSA
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip CI
+        run: |
+          if [[ "${{contains( github.event.pull_request.labels.*.name, 'Skip CI')}}" == "true" ]]; then
+            echo "skipping CI due to the 'Skip CI' label"
+            exit 1
+          fi
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run FOSSA scan and upload build data
+        uses: fossa-contrib/fossa-action@v3
+        with:
+          fossa-api-key: d384641f01bbc217d857ff9ba6d4ccc2
+          github-token: ${{ github.token }}
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [ '1.19', '1.20', '1.21.x' ]
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+      # You can test your matrix by printing the current Go version
+      - name: Display Go version
+        run: go version
+
+      - name: Install dependencies
+        run: |
+          go get .
+          github.com/gotesttools/gotestfmt/v2/cmd/gotestfmt@latest
+
+      - name: Test with Go
+        run: go test -race -json -v -coverprofile=coverage.txt ./... 2>&1 | tee TestResults-${{ matrix.go-version }}.json | gotestfmt
+
+      - name: Upload Go test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: Go-results-${{ matrix.go-version }}
+          path: TestResults-${{ matrix.go-version }}.json
+
+      - run: echo "🍏 This job's status is ${{ job.status }}."
