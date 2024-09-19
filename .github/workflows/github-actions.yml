@@ -41,7 +41,7 @@ jobs:
       - name: Install libvirt
         run: |
           sudo apt-get update
-          sudo apt-get -y install libvirt-devel libvirt-daemon-kvm libvirt-client
+          sudo apt-get -qqy install libvirt-daemon-system libvirt-clients libvirt-dev
       - uses: actions/checkout@v4
       - name: Setup Go
         uses: actions/setup-go@v5
