@@ -14,8 +14,8 @@ type Version struct {
 	LibvirtVersion    string `json:"libvirtVersion"`
 }
 
-// govirtlib implements libvirt's functionality
-type govirtlib struct {
+// Govirtlib implements libvirt's functionality
+type Govirtlib struct {
 	uri        string
 	Connection *libvirt.Connect
 }
@@ -36,16 +36,16 @@ type VMInfo struct {
 }
 
 // NewConnection establishes communication with the specified libvirt
-func NewConnection(uri string) (*govirtlib, error) {
+func NewConnection(uri string) (*Govirtlib, error) {
 	if uri == "" {
 		uri = QEMUSystem
 	}
 	conn, err := libvirt.NewConnect(uri)
 	if err != nil {
-		return &govirtlib{uri, nil}, err
+		return &Govirtlib{uri, nil}, err
 	}
 
-	return &govirtlib{uri, conn}, nil
+	return &Govirtlib{uri, conn}, nil
 }
 
 // GetVersion func returns Version struct
@@ -53,7 +53,7 @@ func NewConnection(uri string) (*govirtlib, error) {
 // https://libvirt.org/html/libvirt-libvirt-host.html#virConnectGetVersion
 //
 // https://libvirt.org/html/libvirt-libvirt-host.html#virConnectGetLibVersion
-func (g *govirtlib) GetVersion() (Version, error) {
+func (g *Govirtlib) GetVersion() (Version, error) {
 	intLibvirtVersion, err := g.Connection.GetLibVersion()
 	if err != nil {
 		return Version{}, err
@@ -65,7 +65,7 @@ func (g *govirtlib) GetVersion() (Version, error) {
 
 // ListAllVM ...
 // See also https://libvirt.org/html/libvirt-libvirt-domain.html#virConnectListAllDomains
-func (g *govirtlib) ListAllVM() ([]VMInfo, error) {
+func (g *Govirtlib) ListAllVM() ([]VMInfo, error) {
 
 	// List all active domains (on VMs)
 	activeDomains, err := g.Connection.ListAllDomains(libvirt.CONNECT_LIST_DOMAINS_ACTIVE)
@@ -110,8 +110,8 @@ func (g *govirtlib) ListAllVM() ([]VMInfo, error) {
 	return vmInfoList, nil
 }
 
-// GettVM func
-func (g *govirtlib) GetVM(by vmOption, val string) (*libvirt.Domain, error) {
+// GetVM func
+func (g *Govirtlib) GetVM(by vmOption, val string) (*libvirt.Domain, error) {
 
 	var domain *libvirt.Domain
 	var err error
@@ -132,7 +132,7 @@ func (g *govirtlib) GetVM(by vmOption, val string) (*libvirt.Domain, error) {
 }
 
 // VMPowerOff func will start the vm . it will either take Vm Name or Vm uuid
-func (g *govirtlib) VMPowerOff(domain *libvirt.Domain, force bool) error {
+func (g *Govirtlib) VMPowerOff(domain *libvirt.Domain, force bool) error {
 	defer domain.Free()
 
 	// Shutdown the VM gracefully
@@ -162,7 +162,7 @@ func (g *govirtlib) VMPowerOff(domain *libvirt.Domain, force bool) error {
 }
 
 // VMPowerOn ...
-func (g *govirtlib) VMPowerOn(domain *libvirt.Domain) error {
+func (g *Govirtlib) VMPowerOn(domain *libvirt.Domain) error {
 	defer domain.Free()
 
 	// Start the VM
@@ -176,7 +176,7 @@ func (g *govirtlib) VMPowerOn(domain *libvirt.Domain) error {
 // VMToggle func will toggle between on and off state of vm, will start
 // if the vm is off or else off if vm is in on state.
 // se also https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainState
-func (g *govirtlib) VMToggle(domain *libvirt.Domain) error {
+func (g *Govirtlib) VMToggle(domain *libvirt.Domain) error {
 	vmState, _, err := domain.GetState()
 	if err != nil {
 		return err

@@ -23,6 +23,8 @@ const (
 	pmSuspended = "PMSUSPENDED"
 	shutOff     = "SHUTOFF"
 
+	// VMOptUUID ...
 	VMOptUUID vmOption = "UUID"
+	// VMOptName ...
 	VMOptName vmOption = "Name"
 )
