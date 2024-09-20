@@ -1,7 +1,5 @@
 package govirtlib
 
-import "time"
-
 type vmOption string
 
 const (
@@ -12,7 +10,7 @@ const (
 
 	// disconnectedTimeout is how long to wait for disconnect cleanup to
 	// complete
-	disconnectTimeout = 5 * time.Second
+	// disconnectTimeout = 5 * time.Second
 
 	nostate     = "NOSTATE"
 	running     = "RUNNING"
