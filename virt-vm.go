@@ -3,6 +3,7 @@ package govirtlib
 import (
 	"errors"
 	"fmt"
+	"log"
 
 	"libvirt.org/go/libvirt"
 )
@@ -77,7 +78,11 @@ func (g *Govirtlib) GetVM(by vmOption, val string) (*libvirt.Domain, error) {
 
 // VMPowerOff func will start the vm . it will either take Vm Name or Vm uuid
 func (g *Govirtlib) VMPowerOff(domain *libvirt.Domain, force bool) error {
-	defer domain.Free()
+	defer func() {
+		if err := domain.Free(); err != nil {
+			log.Fatalf("Error freeing domain: %v", err)
+		}
+	}()
 
 	// Shutdown the VM gracefully
 	err := domain.Shutdown()
@@ -107,7 +112,11 @@ func (g *Govirtlib) VMPowerOff(domain *libvirt.Domain, force bool) error {
 
 // VMPowerOn ...
 func (g *Govirtlib) VMPowerOn(domain *libvirt.Domain) error {
-	defer domain.Free()
+	defer func() {
+		if err := domain.Free(); err != nil {
+			log.Fatalf("Error freeing domain: %v", err)
+		}
+	}()
 
 	// Start the VM
 	err := domain.Create()
